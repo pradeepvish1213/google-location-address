@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Google Geo Code Location And Address</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        var geocoder = '';
+
+        function initMap() {
+            geocoder = new google.maps.Geocoder;
+            getLocation();
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                window.alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            var latlang = position.coords.latitude + "," + position.coords.longitude;
+            document.getElementById('latlng').value = latlang;
+            geocodeLatLng(latlang);
+        }
+
+        function geocodeLatLng(latlang) {
+            var latlngStr = latlang.split(',', 2);
+            var latlng = {
+                lat: parseFloat(latlngStr[0]),
+                lng: parseFloat(latlngStr[1])
+            };
+            geocoder.geocode({
+                'location': latlng
+            }, function(results, status) {
+                if (status === 'OK') {
+                    if (results[0]) {
+                        document.getElementById('address').value = results[0].formatted_address;
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        }
+    </script>
+</head>
+
+<body onload="initMap()">
+    <div class="container">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <br><br>
+            <h2 class="text-center text-success">Google Location And Address</h2>
+            <br><br><br>
+            <label>Latitude and Longitude :</label>
+            <textarea id="latlng" class="form-control" cols="50" rows="5"></textarea>
+            <br><br>
+            <label>Address :</label>
+            <textarea id="address" class="form-control" rows="5" cols="50"></textarea>
+        </div>
+        <div class="col-md-2"></div>
+    </div><br><br><br><br>
+    <footer class="text-center">
+        <h6>
+            <a href="http://facebook.com/pradeepvish1213">Code written by Pradeep Vishwakarma</a>
+        </h6>
+    </footer>
+</body>
+
+</html>
